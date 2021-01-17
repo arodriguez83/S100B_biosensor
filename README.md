@@ -1,5 +1,5 @@
 # S100B_biosensor
-Thisnotebook analyses the data from the biosensor experiment lead by Alexander Rodríguez
+This notebook analyses the data from the S100B-biosensor experiment lead by Alexander Rodríguez
 This is an R notebook
 
 # Analysis AuEs
