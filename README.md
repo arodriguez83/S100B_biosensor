@@ -1,12 +1,13 @@
 # S100B_biosensor
 Thisnotebook analyses the data from the biosensor experiment lead by Alexander Rodríguez
 This is an R notebook
-#Read data PBS
+
+#Read data AuEs-PBS
 PBS <- read.csv("PBS.csv") 
 Ag_PBS <- as.factor(PBS$Niveles)
 dRct_PBS<- PBS$dRct
 
-# Se transforma y para normalizar
+# Normalization
 PBS$y = log(dRct_PBS)
 PBS$x = Ag_PBS
 
@@ -15,39 +16,39 @@ boxplot(PBS$y ~ PBS$x, col=456, xlab = "[S100B](pg/mL)", ylab= " logdRct", main 
 require(MASS)
 AjustePBS<-fitdistr(PBS$y, "normal")
 AjustePBS
-###Kolmogorov-Smirnov PBS
+###Kolmogorov-Smirnov AuEs-PBS
 KsnPBS<- ks.test(PBS$y, "pnorm", mean =AjustePBS$estimate[1], sd= AjustePBS$estimate[2])
 KsnPBS
-##Shapiro PBS
+##Shapiro AuEs-PBS
 SwnPBS<-shapiro.test(PBS$y)
 SwnPBS
 
-#Exploratorio PBS
+#Exploratory AuEs-PBS
 par(mfrow=c(1,3))
 hist(PBS$y, xlab = "log_dRct", ylab = "Frequency", las=1, 
      main = "log_dRct (PBS & AuEs)", ylim = c(0,12), col = "gray")
 boxplot(PBS$y, col = "gray", ylab="log_dRct")
 plot(density(PBS$y), xlab = "log_dRct", ylab = "Density", las=1, main = "")
 
-#Welch ANOVA PBS
+#Welch ANOVA AuEs-PBS
 library(rstatix)
 ANOVA_PBS <- PBS %>% welch_anova_test(y ~ x)
 ANOVA_PBS
 summary(ANOVA_PBS)
 
-#Prueba Post hoc
-#Games Howell PBS
+#Post hoc analysis
+#Games Howell AuEs-PBS
 games_howell_test(PBS, y ~ Niveles, conf.level = 0.95, detailed = FALSE)
 
 Modelo1_lm <- lm(y ~ x, data = PBS)
 plot(Modelo1_lm, which = c(1:3))
 
-#Read data Plasma
+#Read data AuEs-Plasma
 Plasma <- read.csv("Plasma.csv") 
 Ag_Plasma <- as.factor(Plasma$Niveles)
 dRct_Plasma<- Plasma$dRct
 
-# Se transforma y para normalizar
+# Normalization
 Plasma$y = log(dRct_Plasma)
 Plasma$x = Ag_Plasma
 
@@ -64,7 +65,7 @@ KsnPlasma
 SwnPlasma<-shapiro.test(Plasma$y)
 SwnPlasma
 
-#Exploratorio Plasma
+#Exploratory AuEs-Plasma
 par(mfrow=c(1,3))
 hist(Plasma$y, xlab = "log_dRct", ylab = "Frequency", las=1, 
      main = "log_dRct (Plasma & AuEs)", ylim = c(0,10), col = "gray")
@@ -77,7 +78,7 @@ ANOVA_Plasma <- Plasma %>% welch_anova_test(y ~ x)
 ANOVA_Plasma
 summary(ANOVA_Plasma)
 
-#Prueba Post hoc
+#Post hoc analysis AuEs-plasma
 ##Games Howell Plasma
 games_howell_test(Plasma, y ~ Niveles, conf.level = 0.95, detailed = FALSE)
 
@@ -85,7 +86,7 @@ Modelo2_lm <- lm(y ~ x, data = Plasma)
 plot(Modelo2_lm, which = c(1:3))
 
 
-#Read data IDEs para dRct
+#Read data IDEs 
 IDE2 <- read.csv("IDEdRct.csv") 
 Ag_IDE2 <- as.factor(IDE2$Niveles)
 dRct_IDE2<- IDE2$drct
@@ -97,28 +98,28 @@ boxplot(dRct_IDE2 ~ Ag_IDE2, col=456, xlab = "[S100B](pg/mL)", ylab= "dRct", mai
 require(MASS)
 AjusteIDE2<-fitdistr(IDE2$drct, "normal")
 AjusteIDE2
-###Kolmogorov-Smirnov IDEs para dRct
+###Kolmogorov-Smirnov IDEs 
 KsnIDE2<- ks.test(IDE2$drct, "pnorm", mean =AjusteIDE2$estimate[1], sd= AjusteIDE2$estimate[2])
 KsnIDE2
 
-##Shapiro IDEs dRct
+##Shapiro IDEs 
 SwnIDE2<-shapiro.test(dRct_IDE2)
 SwnIDE2
 
-#Exploratorio IDEs dRCt
+#Exploratory IDEs dRCt
 par(mfrow=c(1,3))
 hist(IDE2$drct, xlab = "log_dRct", ylab = "Frequency", las=1, 
      main = "log_dRct (Plasma & IDEs)", ylim = c(0,12), col = "gray")
 boxplot(IDE2$drct, col = "gray", ylab="log_dRct")
 plot(density(IDE2$drct), xlab = "log_dRct", ylab = "Density", las=1, main = "")
 
-#Homocedasticidad IDEs para dRct
+#Homoscedasticity IDEs 
 library(car)
 leveneTest(dRct_IDE2 ~ Ag_IDE2, data = IDE2, center = "median")
 
 bartlett.test(dRct_IDE2 ~ Ag_IDE2, data = IDE2 )
 
-##ANOVA IDEs para dRct
+##ANOVA IDEs 
 anova_IDE<- aov(dRct_IDE2 ~ Ag_IDE2)
 summary(anova_IDE)
 
@@ -170,7 +171,7 @@ Ksn_ctr<- ks.test(Rct, "pnorm", mean = Ajuste_ctr$estimate[1],
                   sd= Ajuste_ctr$estimate[2])
 Ksn_ctr
 
-#Homocedasticidad para Rct
+#Homoscedasticity controls
 library(car)
 leveneTest(Rct ~ condition, data = ctr, center = "median")
 
@@ -186,14 +187,14 @@ TukeyHSD(anova_ctr)
 par(mfrow=c(1,1))
 plot(TukeyHSD(anova_ctr))
 
-#Read data controlesIDE
+#Read data controls-IDE
 ctrIDE <- read.csv("controlesIDE.csv") 
 condition_IDE <- as.factor(ctrIDE$Niveles)
 dRct_IDE <- ctrIDE$dRct
 Rct_IDE <- ctrIDE$Rct
 
 
-##AnÃ¡lisis para Rct IDE
+##Analysis controls-IDE
 boxplot(Rct_IDE ~ condition_IDE, col=456, xlab = "Controls", ylab= "Rct", main = "Control tests for AuIDEs")
 
 require(MASS)
@@ -204,7 +205,7 @@ Ksn_ctrIDE<- ks.test(Rct_IDE, "pnorm", mean = Ajuste_ctrIDE$estimate[1],
                   sd= Ajuste_IDE$estimate[2])
 Ksn_ctrIDE
 
-#Homocedasticidad para Rct IDE
+#Homoscedasticity IDEs
 library(car)
 leveneTest(Rct_IDE ~ condition_IDE, data = ctrIDE, center = "median")
 
