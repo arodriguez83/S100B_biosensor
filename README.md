@@ -2,12 +2,13 @@
 Thisnotebook analyses the data from the biosensor experiment lead by Alexander Rodríguez
 This is an R notebook
 
-#Read data AuEs-PBS
+# Analysis AuEs
+##Read data AuEs-PBS
 PBS <- read.csv("PBS.csv") 
 Ag_PBS <- as.factor(PBS$Niveles)
 dRct_PBS<- PBS$dRct
 
-# Normalization
+##Normalization
 PBS$y = log(dRct_PBS)
 PBS$x = Ag_PBS
 
@@ -43,12 +44,13 @@ games_howell_test(PBS, y ~ Niveles, conf.level = 0.95, detailed = FALSE)
 Modelo1_lm <- lm(y ~ x, data = PBS)
 plot(Modelo1_lm, which = c(1:3))
 
+# Analysis AuEs-plasma
 #Read data AuEs-Plasma
 Plasma <- read.csv("Plasma.csv") 
 Ag_Plasma <- as.factor(Plasma$Niveles)
 dRct_Plasma<- Plasma$dRct
 
-# Normalization
+##Normalization
 Plasma$y = log(dRct_Plasma)
 Plasma$x = Ag_Plasma
 
@@ -85,7 +87,7 @@ games_howell_test(Plasma, y ~ Niveles, conf.level = 0.95, detailed = FALSE)
 Modelo2_lm <- lm(y ~ x, data = Plasma)
 plot(Modelo2_lm, which = c(1:3))
 
-
+# Analysis AuIDEs
 #Read data IDEs 
 IDE2 <- read.csv("IDEdRct.csv") 
 Ag_IDE2 <- as.factor(IDE2$Niveles)
@@ -153,6 +155,7 @@ plot(Modelo_IDE_lm, which = c(1:3))
 g1 <- ggplot(IDE2, aes(x=Niveles, y = dRct_IDE2, color =  Ag_IDE2)) 
 g1 + geom_point() + geom_smooth(method="lm")
 
+# Analysis Controls AuEs
 #Read data controles
 ctr <- read.csv("controles.csv") 
 condition <- as.factor(ctr$Niveles)
@@ -160,7 +163,7 @@ dRct <- ctr$dRct
 Rct <- ctr$Rct
 
 
-##AnÃ¡lisis para Rct
+##Analysis for Rct
 boxplot(Rct ~ condition, col=456, xlab = "Controls", ylab= "Rct", main = "Control tests for AuEs")
 
 require(MASS)
@@ -187,6 +190,7 @@ TukeyHSD(anova_ctr)
 par(mfrow=c(1,1))
 plot(TukeyHSD(anova_ctr))
 
+# Analysis controls AuIDEs
 #Read data controls-IDE
 ctrIDE <- read.csv("controlesIDE.csv") 
 condition_IDE <- as.factor(ctrIDE$Niveles)
